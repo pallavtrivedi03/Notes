@@ -15,6 +15,7 @@ protocol NoteCellDelegate:class
 
 class NoteCell: UICollectionViewCell
 {
+    @IBOutlet weak var containerView: UIView!
     @IBOutlet weak var deleteButton: UIButton!
     @IBOutlet weak var dateLabel: UILabel!
     @IBOutlet weak var messageLabel: UILabel!
@@ -23,6 +24,7 @@ class NoteCell: UICollectionViewCell
     
     @IBAction func didClickOnDeleteButton(sender: AnyObject)
     {
-        delegate?.didClickOnDeletebutton(deleteButton.tag)
+        delegate?.didClickOnDeletebutton(self.tag)
     }
+
 }

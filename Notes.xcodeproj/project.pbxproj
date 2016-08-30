@@ -19,6 +19,10 @@
 		7B48FF1C1D6D696E00C4F2A7 /* NotesDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B48FF1B1D6D696E00C4F2A7 /* NotesDetailViewController.swift */; };
 		7B48FF1E1D6D776200C4F2A7 /* Note.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B48FF1D1D6D776200C4F2A7 /* Note.swift */; };
 		7B48FF201D6ED5FE00C4F2A7 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B48FF1F1D6ED5FE00C4F2A7 /* SettingsViewController.swift */; };
+		7BB4DFA01D74524900E581C8 /* trashSound.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 7BB4DF9F1D74524900E581C8 /* trashSound.mp3 */; };
+		7BB4DFA31D74610000E581C8 /* binClose.png in Resources */ = {isa = PBXBuildFile; fileRef = 7BB4DFA11D74610000E581C8 /* binClose.png */; };
+		7BB4DFA41D74610000E581C8 /* binOpen.png in Resources */ = {isa = PBXBuildFile; fileRef = 7BB4DFA21D74610000E581C8 /* binOpen.png */; };
+		7BB4DFA81D7475E700E581C8 /* cellBackground.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7BB4DFA71D7475E700E581C8 /* cellBackground.jpg */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -36,6 +40,10 @@
 		7B48FF1B1D6D696E00C4F2A7 /* NotesDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotesDetailViewController.swift; sourceTree = "<group>"; };
 		7B48FF1D1D6D776200C4F2A7 /* Note.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Note.swift; sourceTree = "<group>"; };
 		7B48FF1F1D6ED5FE00C4F2A7 /* SettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
+		7BB4DF9F1D74524900E581C8 /* trashSound.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = trashSound.mp3; sourceTree = "<group>"; };
+		7BB4DFA11D74610000E581C8 /* binClose.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = binClose.png; sourceTree = "<group>"; };
+		7BB4DFA21D74610000E581C8 /* binOpen.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = binOpen.png; sourceTree = "<group>"; };
+		7BB4DFA71D7475E700E581C8 /* cellBackground.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = cellBackground.jpg; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -68,6 +76,7 @@
 		7B48FEF31D6B0F6A00C4F2A7 /* Notes */ = {
 			isa = PBXGroup;
 			children = (
+				7BB4DF9C1D744B1400E581C8 /* Resources */,
 				7B48FEF41D6B0F6A00C4F2A7 /* AppDelegate.swift */,
 				7B48FEF61D6B0F6A00C4F2A7 /* ViewController.swift */,
 				7B48FEF81D6B0F6A00C4F2A7 /* Main.storyboard */,
@@ -83,6 +92,17 @@
 				7B48FF1F1D6ED5FE00C4F2A7 /* SettingsViewController.swift */,
 			);
 			path = Notes;
+			sourceTree = "<group>";
+		};
+		7BB4DF9C1D744B1400E581C8 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				7BB4DFA71D7475E700E581C8 /* cellBackground.jpg */,
+				7BB4DFA11D74610000E581C8 /* binClose.png */,
+				7BB4DFA21D74610000E581C8 /* binOpen.png */,
+				7BB4DF9F1D74524900E581C8 /* trashSound.mp3 */,
+			);
+			path = Resources;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -144,8 +164,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				7B48FF021D6B0F6A00C4F2A7 /* LaunchScreen.storyboard in Resources */,
+				7BB4DFA81D7475E700E581C8 /* cellBackground.jpg in Resources */,
+				7BB4DFA41D74610000E581C8 /* binOpen.png in Resources */,
 				7B48FEFF1D6B0F6A00C4F2A7 /* Assets.xcassets in Resources */,
+				7BB4DFA01D74524900E581C8 /* trashSound.mp3 in Resources */,
 				7B48FEFA1D6B0F6A00C4F2A7 /* Main.storyboard in Resources */,
+				7BB4DFA31D74610000E581C8 /* binClose.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -316,6 +340,7 @@
 				7B48FF081D6B0F6A00C4F2A7 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 

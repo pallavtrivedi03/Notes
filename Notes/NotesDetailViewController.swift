@@ -25,6 +25,8 @@ class NotesDetailViewController: UIViewController {
     {
         titleTextField.text = existingNote.title
         detailTextView.text = existingNote.message
+        self.navigationItem.rightBarButtonItem?.tintColor = colorFromHexString("#FF8000")
+        self.navigationController?.navigationBar.tintColor = colorFromHexString("#FF8000")
     }
     func didClickOnSaveButton(sender:UIBarButtonItem) -> Void
     {

@@ -8,6 +8,7 @@
 
 import UIKit
 import CoreData
+import AudioToolbox
 
 class NotesViewController: UIViewController {
     
@@ -17,6 +18,8 @@ class NotesViewController: UIViewController {
         case Stable
     }
     
+    
+    @IBOutlet weak var trashImageView: UIImageView!
     @IBOutlet weak var addButton: UIBarButtonItem!
     @IBOutlet weak var notesCollectionView: UICollectionView!
     var notes = [NSManagedObject]()
@@ -24,7 +27,9 @@ class NotesViewController: UIViewController {
     var managedContext:NSManagedObjectContext!
     var fetchRequest:NSFetchRequest!
     var cellMode:CellMode!
-    var titleOfCellToBeDeleted:String?
+    var soundURL:NSURL?
+    var soundID:SystemSoundID = 0
+    
     @IBOutlet weak var deletionDoneButton: UIBarButtonItem!
     override func viewDidLoad()
     {
@@ -51,10 +56,15 @@ class NotesViewController: UIViewController {
     
     @IBAction func didLongPressOccurred(sender: AnyObject)
     {
-        cellMode = .Shake
-        deletionDoneButton.title = "Cancel"
-        addButton.title = ""
-        notesCollectionView.reloadData()
+        if cellMode != .Shake
+        {
+            cellMode = .Shake
+            deletionDoneButton.title = "Cancel"
+            addButton.title = ""
+            trashImageView.hidden = false
+            trashImageView.image = UIImage(named: "binClose.png")
+            notesCollectionView.reloadData()
+        }
     }
     
     @IBAction func didClickOnDeletionDone(sender: AnyObject)
@@ -62,11 +72,16 @@ class NotesViewController: UIViewController {
         deletionDoneButton.title = ""
         addButton.title = "✚"
         cellMode = .Stable
+        trashImageView.hidden = true
         notesCollectionView.reloadData()
     }
     
     func deleteRecord(tag:Int)
     {
+        let filePath = NSBundle.mainBundle().pathForResource("trashSound", ofType: "mp3")
+        soundURL = NSURL(fileURLWithPath: filePath!)
+        AudioServicesCreateSystemSoundID(soundURL!, &soundID)
+        AudioServicesPlaySystemSound(soundID)
         
         let noteToDelete = notes[tag]
         notes.removeAtIndex(tag)
@@ -83,7 +98,20 @@ class NotesViewController: UIViewController {
             cellMode = .Stable
             deletionDoneButton.title = ""
             addButton.title = "✚"
+            trashImageView.hidden = true
         }
+        
+        let indexPath = NSIndexPath(forRow: tag, inSection: 0)
+        let cell = self.notesCollectionView.cellForItemAtIndexPath(indexPath) as! NoteCell
+        self.perfomDeleteAnimation(cell)
+        notesCollectionView.deleteItemsAtIndexPaths([indexPath])
+        for i in 0..<notes.count
+        {
+            let indexPath = NSIndexPath(forRow: i, inSection: 0)
+            let cell = self.notesCollectionView.cellForItemAtIndexPath(indexPath) as! NoteCell
+            cell.tag = i
+        }
+        trashImageView.image = UIImage(named: "binClose.png")
     }
     
     func perfomDeleteAnimation(cell:NoteCell)
@@ -98,12 +126,12 @@ class NotesViewController: UIViewController {
         cell.layer.position = viewOrigin;
         
         let fadeOutAnimation = CABasicAnimation.init(keyPath: "opacity")
-        fadeOutAnimation.toValue = 0.3
+        fadeOutAnimation.toValue = 1.0
         fadeOutAnimation.fillMode = kCAFillModeForwards
         fadeOutAnimation.removedOnCompletion = false
         
         let resizeAnimation = CABasicAnimation.init(keyPath: "bounds.size")
-        resizeAnimation.toValue = NSValue.init(CGSize: CGSizeMake(40.0, cellFrame.size.height * (40.0 / cellFrame.size.width)))
+        resizeAnimation.toValue = NSValue.init(CGSize: CGSizeMake(100.0, 70.0))
         resizeAnimation.fillMode = kCAFillModeForwards
         resizeAnimation.removedOnCompletion = false
         
@@ -113,11 +141,11 @@ class NotesViewController: UIViewController {
         pathAnimation.removedOnCompletion = false
         
         let endPointX = UIScreen.mainScreen().bounds.width - (UIScreen.mainScreen().bounds.width)/2
-        let endPoint = CGPointMake(endPointX, 760.0);
+        let endPoint = CGPointMake(endPointX, 900);
         
         let curvedPath = CGPathCreateMutable();
         CGPathMoveToPoint(curvedPath, nil, viewOrigin.x, viewOrigin.y);
-        CGPathAddCurveToPoint(curvedPath, nil, endPoint.x, viewOrigin.y, endPoint.x, viewOrigin.y, endPoint.x, endPoint.y);
+        CGPathAddCurveToPoint(curvedPath, nil, endPoint.x, viewOrigin.y, endPoint.x, endPoint.y, endPoint.x, endPoint.y);
         pathAnimation.path = curvedPath;
         
         
@@ -125,7 +153,7 @@ class NotesViewController: UIViewController {
         group.fillMode = kCAFillModeForwards;
         group.removedOnCompletion = false;
         group.animations = [fadeOutAnimation,pathAnimation,resizeAnimation]
-        group.duration = 0.7;
+        group.duration = 1.0;
         group.delegate = self;
         group.setValue(cell, forKey: "noteCellBeingDeleted")
         cell.layer.addAnimation(group, forKey: "savingAnimation")
@@ -172,19 +200,14 @@ extension NotesViewController:UICollectionViewDataSource,UICollectionViewDelegat
         cell.titleLabel.text = note.valueForKey("title") as? String
         cell.messageLabel.text = note.valueForKey("message") as? String
         cell.dateLabel.text = note.valueForKey("lastModifiedOn") as? String
-        cell.deleteButton.tag = indexPath.row
+        cell.containerView.backgroundColor = UIColor(patternImage: UIImage(named:"cellBackground.jpg")!)
+        cell.tag = indexPath.row
         
         cellMode == .Shake ? (cell.deleteButton.hidden = false) : (cell.deleteButton.hidden = true)
         if cellMode == .Shake
         {
-           self.performShakeAnimation(cell)
+            self.performShakeAnimation(cell)
         }
-        
-        if cell.titleLabel.text == titleOfCellToBeDeleted
-        {
-            self.perfomDeleteAnimation(cell)
-        }
-        
         return cell
     }
     
@@ -205,15 +228,7 @@ extension NotesViewController:NoteCellDelegate
 {
     func didClickOnDeletebutton(tag: Int)
     {
-        let indexPath = NSIndexPath(forRow: tag, inSection: 0)
-        let cell = self.notesCollectionView.cellForItemAtIndexPath(indexPath) as! NoteCell
-        titleOfCellToBeDeleted = cell.titleLabel.text!
-        notesCollectionView.reloadData()
-        let triggerTime = (Int64(NSEC_PER_SEC) * 1)
-//        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, triggerTime), dispatch_get_main_queue(), { () -> Void in
-//            self.deleteRecord(tag)
-//        })
-        
-        
+        trashImageView.image = UIImage(named: "binOpen.png")
+        self.deleteRecord(tag)
     }
 }
